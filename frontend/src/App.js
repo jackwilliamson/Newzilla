@@ -1,7 +1,20 @@
 import React, { Component } from 'react';
+import Grid from './Grid.js';
 import logo from './logo.svg';
 import Headlines from './Headlines'
 import './App.css';
+
+var pass = {
+  row: [
+    {
+      col: [1]
+    },
+    {
+      col: [1,2]
+    }
+  ]
+
+}
 
 class App extends Component {
   render() {
@@ -14,6 +27,9 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
+        <div>
+
+        </div>
         <div className="container">
           <Headlines linkText={"Insert Headline here"} linkImg={false}/>
         </div>
