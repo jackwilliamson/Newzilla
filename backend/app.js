@@ -33,16 +33,8 @@ MongoClient.connect(url, function (err, db) {
     return;
   }
   var database = db.db('newzilla');
-  database.collection('topics').insertOne({'fadfa': 'test'  }, (err, res) => {
-    if (err) throw err;
-    console.log("Inserted");
-  });
-
-  var cursor = database.collection('topics').find();
-
-  cursor.forEach(function (doc) {
-    console.log(doc);
-  });
+  
+  console.log("Connected to Mongo")
 });
 
 
