@@ -37,16 +37,17 @@ MongoClient.connect(url, function (err, db) {
 });
 
 function reply(res, response) {
-  res.json(JSON.stringify(response))
+  res.json(response)
 }
 
 router.get('/topics', (req, res) => {
   database.collection('topics').distinct('title', (err, data) => {
-    if(err){
-        res.status(400);
-        console.log(err);
-        reply(res,{});
-    }else{
+    if (err) {
+      res.status(400);
+      console.log(err);
+      reply(res, {});
+    } else {
+      console.log(data);
       reply(res, data);
     }
   });
@@ -93,9 +94,9 @@ function updateTopics() {
       response.articles.map((article) => {
         return { title: article.title };
       }), (err, res) => {
-      if (err) throw err;
-      console.log("Inserted");
-    });
+        if (err) throw err;
+        console.log("Inserted");
+      });
 
     console.log(response);
   });
