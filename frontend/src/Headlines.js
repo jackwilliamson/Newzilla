@@ -9,7 +9,6 @@ var styleA = {
 
 function Headlines(props) {
   return (
-    <div className="col-md-4">
       <div className="card mb-4 shadow-sm">
           <img className="card-img-top" alt="Thumbnail [100%x225]" style={styleA} src={props.linkImg || temp} data-holder-rendered="true"/>
               <div className="card-body">
@@ -19,7 +18,6 @@ function Headlines(props) {
                 </div>
               </div>
       </div>
-    </div>
     );
 }
 

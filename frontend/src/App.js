@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import Grid from './Grid.js';
 import logo from './logo.svg';
-import Headlines from './Headlines'
 import './App.css';
 
 var pass = {
   row: [
     {
-      col: [1]
+      col: [1,2,3,4]
     },
     {
-      col: [1,2]
+      col: [1,2,3,4]
     }
   ]
 
@@ -30,8 +29,8 @@ class App extends Component {
         <div>
 
         </div>
-        <div className="container">
-          <Headlines linkText={"Insert Headline here"} linkImg={false}/>
+        <div>
+          <Grid row = {pass.row}/>
         </div>
       </div>
     );
