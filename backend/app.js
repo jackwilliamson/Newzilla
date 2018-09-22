@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var news_api = require('news-api');
+var news_api = require('newsapi');
 
 
 var router = express.Router() // get an instance of the express Router
@@ -20,13 +20,35 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+var MongoClient = require('mongodb').MongoClient;
+var url = 'mongodb://localhost/';
+
+MongoClient.connect(url, function (err, db) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  var database = db.db('newzilla');
+  database.collection('topics').insertOne({'fadfa': 'test'  }, (err, res) => {
+    if (err) throw err;
+    console.log("Inserted");
+  });
+
+  var cursor = database.collection('topics').find();
+
+  cursor.forEach(function (doc) {
+    console.log(doc);
+  });
+});
+
+
 function reply(res, response) {
   res.json(JSON.stringify(response))
 }
 
 router.get('/topics', (req, res) => {
   res.status(200);
-  reply(res, {test: "TEST"});
+  reply(res, { test: "TEST" });
 });
 
 router.get('/articles', (req, res) => {
