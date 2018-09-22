@@ -1,9 +1,12 @@
+const api_keys_file = require('./config/api-key.json');
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var news_api = require('news-api');
+var NewsAPI = require('newsapi');
+const news_client_instance = new NewsAPI(api_keys_file.news_api_key);
 var cron = require("node-cron");
 
 
@@ -58,6 +61,15 @@ app.use((err, req, res, next) => {
 
 cron.schedule("*/15 * * * *", () => {
   console.log("refreshing local topics list from API");
+
+  news_client_instance.v2.topHeadlines({
+    language: 'en',
+    country: 'us'
+  }).then(response => {
+    console.log(response);
+
+    // update DB here
+  });
 });
 
 server.listen(port);
