@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Headlines from './Headlines';
 
 class Grid extends Component {
 
@@ -21,7 +22,7 @@ class Grid extends Component {
   renderCol() {
     return (
       <div className="col-sm">
-        One of three columns
+        <Headlines linkText={"Insert Headline here"} linkImg={false}/>
       </div>
     )
   }
