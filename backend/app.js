@@ -56,5 +56,9 @@ app.use((err, req, res, next) => {
   res.render('error');
 });
 
+cron.schedule("*/15 * * * *", () => {
+  console.log("refreshing local topics list from API");
+});
+
 server.listen(port);
 console.log('Server started on port ' + port);
