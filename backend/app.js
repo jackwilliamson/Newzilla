@@ -1,5 +1,4 @@
 const api_keys_file = require('./config/api-key.json');
-
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -34,26 +33,23 @@ MongoClient.connect(url, function (err, db) {
     return;
   }
   database = db.db('newzilla');
-  database.collection('topics').insertOne({'fadfa': 'test'  }, (err, res) => {
-    if (err) throw err;
-    console.log("Inserted");
-  });
-
-  var cursor = database.collection('topics').find();
-
-  cursor.forEach(function (doc) {
-    console.log(doc);
-  });
+  console.log("Connected to MongoDB");
 });
-
 
 function reply(res, response) {
   res.json(JSON.stringify(response))
 }
 
 router.get('/topics', (req, res) => {
-  res.status(200);
-  reply(res, { test: "TEST" });
+  database.collection('topics').distinct('title', (err, data) => {
+    if(err){
+        res.status(400);
+        console.log(err);
+        reply(res,{});
+    }else{
+      reply(res, data);
+    }
+  });
 });
 
 router.get('/articles', (req, res) => {
@@ -84,7 +80,6 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
 });
 
 function updateTopics() {
