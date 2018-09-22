@@ -4,23 +4,39 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+
+var router = express.Router() // get an instance of the express Router
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+var server = require('http').Server(app)
+
+var port = process.env.PORT || 8081 // set our port
+
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+function reply (res, response) {
+  res.json(JSON.stringify(response))
+}
+
+router.get('/topics', function(req, res){
+  res.status(200);
+  reply(res, {test: "TEST"});
+});
+
+router.get('/articles', function (req, res) {
+
+})
+
+router.get('/', function(req, res){
+  res.status(200);
+})
+
+app.use('/', router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -38,4 +54,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+server.listen(port);
+console.log('Server started on port ' + port);
