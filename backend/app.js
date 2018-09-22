@@ -27,12 +27,13 @@ app.use(cookieParser());
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost/';
 
+var database;
 MongoClient.connect(url, function (err, db) {
   if (err) {
     console.log(err);
     return;
   }
-  var database = db.db('newzilla');
+  database = db.db('newzilla');
   database.collection('topics').insertOne({'fadfa': 'test'  }, (err, res) => {
     if (err) throw err;
     console.log("Inserted");
@@ -60,7 +61,12 @@ router.get('/articles', (req, res) => {
 })
 
 router.get('/', (req, res) => {
+  console.log("refreshing local topics list from API");
+
+  updateTopics();
+
   res.status(200);
+  reply(res, { done: "done" });
 })
 
 app.use('/', router);
@@ -81,17 +87,27 @@ app.use((err, req, res, next) => {
   res.render('error');
 });
 
-cron.schedule("*/15 * * * *", () => {
+function updateTopics() {
   console.log("refreshing local topics list from API");
 
   news_client_instance.v2.topHeadlines({
     language: 'en',
     country: 'us'
   }).then(response => {
-    console.log(response);
+    database.collection('topics').insertMany(
+      response.articles.map((article) => {
+        return { title: article.title };
+      }), (err, res) => {
+      if (err) throw err;
+      console.log("Inserted");
+    });
 
-    // update DB here
+    console.log(response);
   });
+}
+
+cron.schedule("*/15 * * * *", () => {
+  updateTopics();
 });
 
 server.listen(port);
