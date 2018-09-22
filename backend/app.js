@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var news_api = require('news-api');
 
 
 var router = express.Router() // get an instance of the express Router
