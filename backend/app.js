@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var news_api = require('news-api');
 
 
 var router = express.Router() // get an instance of the express Router
@@ -19,32 +20,32 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-function reply (res, response) {
+function reply(res, response) {
   res.json(JSON.stringify(response))
 }
 
-router.get('/topics', function(req, res){
+router.get('/topics', (req, res) => {
   res.status(200);
   reply(res, {test: "TEST"});
 });
 
-router.get('/articles', function (req, res) {
+router.get('/articles', (req, res) => {
 
 })
 
-router.get('/', function(req, res){
+router.get('/', (req, res) => {
   res.status(200);
 })
 
 app.use('/', router);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
