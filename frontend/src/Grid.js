@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
+import Headlines from './Headlines';
 import axios from 'axios';
+
+var myStyle = {
+  display: 'inline',
+}
+
+var center = {
+  marginTop: '125px',
+}
+
 
 class Grid extends Component {
 
@@ -12,22 +22,28 @@ class Grid extends Component {
     })
   }
 
-  renderRow(row) {
+  renderRow(row, index) {
     return (
       <div className="row">
+      <p style={center}>Topics</p>
       {row.col.map(
         (col) => {
-          return (this.renderCol())
+          return (
+            this.renderCol(index)
+          )
         }
       )}
       </div>
     )
   }
 
-  renderCol() {
+  renderCol(index) {
     return (
       <div className="col-sm">
-        One of three columns
+          {index == 0 &&
+            <p style={myStyle}>Sources</p>
+          }
+        <Headlines linkText={"Insert Headline here"} linkImg={"https://d262ilb51hltx0.cloudfront.net/max/800/1*uTAT1bayI6ek6esb-BcZhg.jpeg"}/>
       </div>
     )
   }
@@ -36,8 +52,8 @@ class Grid extends Component {
     return (
       <div className="container">
       {this.state.newsArticles.map(
-        (article) => {
-          return (this.renderRow(article))
+        (article, index) => {
+          return (this.renderRow(article, index))
         }
       )}
       </div>
@@ -72,5 +88,6 @@ class Grid extends Component {
 //     );
 //   }
 // }
+
 
 export default Grid;

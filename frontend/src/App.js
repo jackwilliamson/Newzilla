@@ -6,10 +6,10 @@ import './App.css';
 var pass = {
   row: [
     {
-      col: [1]
+      col: [1,2,3,4]
     },
     {
-      col: [1,2]
+      col: [1,2,3,4]
     }
   ]
 
@@ -19,14 +19,15 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <Grid row={pass.row}/>
+      <div className="jumbotron jumbotron-fluid">
+          <div className="container-fluid">
+              <h1 className="display-4">Newzilla</h1>
+              <p className="lead">Find more persectives on your news. Click on a source to read the article</p>
+          </div>
+      </div>
+        <div>
+          <Grid row = {pass.row}/>
+        </div>
       </div>
     );
   }
