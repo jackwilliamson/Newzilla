@@ -24,7 +24,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors);
+app.use(cors());
 
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost/';
@@ -86,8 +86,31 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
 });
 
-function updateArticles() {
-  database.collection('topics').updateMany();
+function updateArticles(titles) {
+  titles.forEach(title => {
+    var options = {
+      method: 'POST',
+      url: 'https://news-api.lateral.io/documents/similar-to-text',
+      headers:
+      {
+        'content-type': 'application/json',
+        'subscription-key': api_keys_file.matching_api_key
+      },
+      body: { text: title },
+      json: true
+    };
+
+    request(options, function (error, response, body) {
+      if (error) throw new Error(error);
+
+      console.log(body);
+      database.collection('topics').updateOne(
+        { topic: title }, // which entries to update
+        { $set: {sources: body }},
+        {}
+      );
+    });
+  });
 }
 
 function updateTopics() {
@@ -98,15 +121,15 @@ function updateTopics() {
     country: 'us'
   }).then(response => {
     response.articles.forEach(article => {
-      database.collection('topics').update(
+      database.collection('topics').updateOne(
         { topic: article.title }, // which entries to update
         { $setOnInsert: { first_seen_date: Date.now(), topic: article.title } }, // what to update with, $setOnInsert applies only on insert not update
         {
           upsert: true,
-          multi: true
         }
       )
     })
+    updateArticles(response.articles.map(article => { return article.title }));
   });
 }
 
