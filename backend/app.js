@@ -7,6 +7,7 @@ var logger = require('morgan');
 var NewsAPI = require('newsapi');
 const news_client_instance = new NewsAPI(api_keys_file.news_api_key);
 var cron = require("node-cron");
+var cors = require('cors');
 
 
 var router = express.Router() // get an instance of the express Router
@@ -22,6 +23,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors);
 
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost/';
