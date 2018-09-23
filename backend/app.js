@@ -8,6 +8,7 @@ var NewsAPI = require('newsapi');
 const news_client_instance = new NewsAPI(api_keys_file.news_api_key);
 var cron = require("node-cron");
 var cors = require('cors');
+var request = require("request-promise");
 
 
 var router = express.Router() // get an instance of the express Router
@@ -57,16 +58,16 @@ router.get('/topics', (req, res) => {
 
 router.get('/articles', (req, res) => {
 
-})
+});
 
-router.get('/', (req, res) => {
+router.get('/update_topics', (req, res) => {
   console.log("refreshing local topics list from API");
 
   updateTopics();
 
   res.status(200);
   reply(res, { done: "done" });
-})
+});
 
 app.use('/', router);
 
@@ -85,6 +86,10 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
 });
 
+function updateArticles() {
+  database.collection('topics').updateMany();
+}
+
 function updateTopics() {
   console.log("refreshing local topics list from API");
 
@@ -92,15 +97,16 @@ function updateTopics() {
     language: 'en',
     country: 'us'
   }).then(response => {
-    database.collection('topics').insertMany(
-      response.articles.map((article) => {
-        return { title: article.title };
-      }), (err, res) => {
-        if (err) throw err;
-        console.log("Inserted");
-      });
-
-    console.log(response);
+    response.articles.forEach(article => {
+      database.collection('topics').update(
+        { topic: article.title }, // which entries to update
+        { $setOnInsert: { first_seen_date: Date.now(), topic: article.title } }, // what to update with, $setOnInsert applies only on insert not update
+        {
+          upsert: true,
+          multi: true
+        }
+      )
+    })
   });
 }
 
