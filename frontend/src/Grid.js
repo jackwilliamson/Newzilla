@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Headlines from './Headlines';
+import axios from 'axios';
 
 var myStyle = {
   display: 'inline',
@@ -7,22 +8,37 @@ var myStyle = {
 
 var center = {
   marginTop: '125px',
+  width: '200px',
 }
+
 
 class Grid extends Component {
 
-  constructor(props) {
+  constructor(props){
     super(props)
+    this.state = {
+      loaded: false,
+    };
   }
 
-  renderRow(row, index) {
+  componentDidMount() {
+    axios.get('http://192.168.1.126:8081/topics').then(res => {
+      const newsArticles = res.data
+      this.setState({
+        newsArticles,
+        loaded: true
+      })
+    })
+  }
+
+  renderRow(articles, row) {
     return (
       <div className="row">
-      <p style={center}>Topics</p>
-      {row.col.map(
-        (col) => {
+      <p style={center}>{articles.topic}</p>
+      {Array.isArray(articles.sources) && articles.sources.slice(0,4).map(
+        (source, index) => {
           return (
-            this.renderCol(index)
+            this.renderCol(source, row, index)
           )
         }
       )}
@@ -30,13 +46,11 @@ class Grid extends Component {
     )
   }
 
-  renderCol(index) {
+  renderCol(source, row, col) {
     return (
       <div className="col-sm">
-          {index == 0 &&
-            <p style={myStyle}>Sources</p>
-          }
-        <Headlines linkText={"Insert Headline here"} linkImg={"https://d262ilb51hltx0.cloudfront.net/max/800/1*uTAT1bayI6ek6esb-BcZhg.jpeg"}/>
+          <p style={myStyle}>{source.source_name}</p>
+          <Headlines linkText={source.title} linkImg={source.image}/>
       </div>
     )
   }
@@ -44,17 +58,15 @@ class Grid extends Component {
   render() {
     return (
       <div className="container">
-      {this.props.row.map(
-        (row, index) => {
-          return (this.renderRow(row,index))
+      {this.state.loaded && this.state.newsArticles.map(
+        (article, index) => {
+          return (this.renderRow(article, index))
         }
       )}
       </div>
     )
   }
 }
-
-
 
 
 
