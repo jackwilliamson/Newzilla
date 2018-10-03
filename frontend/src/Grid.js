@@ -34,7 +34,7 @@ class Grid extends Component {
   renderRow(articles, row) {
     return (
       <div className="row">
-      <p style={center}>{articles.topic}</p>
+      {Array.isArray(articles.sources) && <p style={center}>{articles.topic}</p>}
       {Array.isArray(articles.sources) && articles.sources.slice(0,4).map(
         (source, index) => {
           return (
